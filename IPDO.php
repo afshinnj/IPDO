@@ -5,7 +5,8 @@
  */
 class IPDO
 {
- public $connect;
+  public $connect;
+
   function __construct()
   {
     try {
@@ -21,13 +22,21 @@ class IPDO
     }
   }
 
-  public function insert(){
-     $statement = $this->connect->prepare("INSERT INTO `post` (`title`, `text`) VALUES (:title , :text)");
-     $statement->bindValue(':title', 'تتتثقصف');
-     $statement->bindValue(':text', 'user2');
-     $statement->execute();
+  public function insert($table = null , $variables = null){
+
+      $fields = array_keys($variables);
+      $fieldsvals = array(implode(",", $fields), ":" . implode(",:", $fields));
+      $sql = "INSERT INTO $table ($fieldsvals[0]) VALUES ($fieldsvals[1])";
+      $result = $this->connect->prepare($sql);
+      foreach ($variables as $f => $v) {
+          $result->bindValue(':' . $f, $v);
+      }
+      $result->execute();
 
   }
 
+  public function select($table = NULL){
+
+  }
 
 }
